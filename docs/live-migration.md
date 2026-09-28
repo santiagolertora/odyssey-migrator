@@ -112,7 +112,7 @@ token-aware. Reads/writes use configured consistency (default `LOCAL_QUORUM`).
 With RF=3, a single replica never has to hold “the whole table” for the migration
 to be correct.
 
-## Honest limits
+## Limits
 
 - Unfrozen **lists**: no per-element TTL/WRITETIME in CQL — Level-A uniform only.
 - Unfrozen **maps/sets**: opt-in `engine.preserve_collection_elements` (needs cluster support for `WRITETIME(col[k])`).
