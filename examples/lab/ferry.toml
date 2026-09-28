@@ -1,0 +1,99 @@
+# Lab smoke: interview SRC (read-only) → OUR scylladb1 cluster (writes only here).
+#
+# SAFETY
+# - Source: SELECT only (Odyssey never INSERT/UPDATE/DELETE/TRUNCATE on SRC)
+# - Target: only keyspace/table we create on OUR cluster (scylladb1 contact point)
+# - Do NOT touch scylla-migrator, scylla-dst-*, or mutate SRC
+#
+# SIZE (measured on SRC via nodetool tablestats):
+# - benchmark.key_value ≈ 46 GB live / ~43M partitions
+# - OUR scylladb1 root disk ≈ 4.7 GB free → FULL COPY WILL NOT FIT
+# - This config uses engine.max_units = 2 (~2/64 of the token ring) for smoke
+
+[migration]
+name = "lab-src-to-scylladb1-smoke"
+
+[source]
+kind = "cql"
+# Requires SSH tunnel (./examples/lab/01-tunnel-src.sh):
+contact_points = ["127.0.0.1:19042"]
+datacenter = "DC1"
+username = "scylla_user"
+password = "SecretP@ssw0rd"
+# Prefer LOCAL_ONE to lighten SRC read load during smoke
+consistency = "local_one"
+# Only keep the tunneled contact node; other peers are private and unreachable
+contact_points_only = true
+# Map the tunneled SRC node (broadcast IP). Port in `from` is native 9042;
+# the driver may rewrite peers to the local tunnel port (19042) — handled in code.
+[[source.address_translations]]
+from = "10.108.0.86:9042"
+to = "127.0.0.1:19042"
+
+[target]
+# OUR cluster — CQL open on public IP; AllowAllAuthenticator (no user/pass)
+contact_points = ["161.22.44.52:9042"]
+datacenter = "DC1"
+consistency = "local_quorum"
+# Create missing keyspace/table on TARGET only (never on SRC)
+create_schema = true
+create_schema_rf = 1
+
+[[tables]]
+source = "benchmark.key_value"
+target = "benchmark.key_value"
+
+[engine]
+workers = 4
+page_size = 5000
+# Concurrent UNLOGGED batches of this many prepared INSERTs (1 = single-row).
+# Keep modest: large cells hit Scylla "Batch too large"; Odyssey auto-splits if needed.
+write_batch_size = 10
+preserve_writetimes = false
+preserve_ttls = false
+# Smoke only — raise or remove ONLY after confirming free disk for ~46GB (+ RF)
+# More units = more parallelism, but also more data toward the disk limit.
+max_units = 2
+
+[engine.concurrency]
+initial = 64
+minimum = 16
+maximum = 256
+
+[engine.adaptive]
+enabled = true
+# WAN / cross-provider writes are slower than same-DC; don't clamp concurrency at 40ms
+target_p99_ms = 200
+
+[checkpoint]
+path = "./.odyssey/lab-src-to-scylladb1.db"
+# Flush paging_state at most this often (always on final page)
+interval_secs = 5
+
+[validation]
+# Sample is enough for smoke; digest over unfinished ranges is wrong for full-table claims
+mode = "sample"
+sample_size = 200
+compare_timestamps = false
+
+[logging]
+verbosity = "info"
+format = "text"
+
+[metrics]
+enabled = true
+listen_addr = "127.0.0.1:9100"
+
+# Dashboard (not Spark Master :8080). Change listen_addr if the port is busy.
+[ui]
+enabled = true
+listen_addr = "127.0.0.1:9080"
+
+[live]
+enabled = false
+
+[integrity]
+guarantee = "at_least_once"
+fail_unit_on_write_error = true
+require_checkpoint_before_complete = true
+checkpoint_on_cancel = true

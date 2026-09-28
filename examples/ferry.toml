@@ -1,0 +1,91 @@
+# Example Odyssey Migrator migration config.
+# Copy this file and replace contact points / table names for your clusters.
+
+[migration]
+name = "cassandra-prod-to-scylla"
+
+[source]
+kind = "cql"
+contact_points = ["127.0.0.1:9042"]
+datacenter = "datacenter1"
+consistency = "local_quorum"
+# username = "ferry"
+# password = "secret"
+
+[target]
+contact_points = ["127.0.0.1:9043"]
+datacenter = "datacenter1"
+consistency = "local_quorum"
+# username = "ferry"
+# password = "secret"
+# create_schema = true
+# create_schema_rf = 1
+
+[[tables]]
+source = "ferry_demo.events"
+target = "ferry_demo.events"
+
+[engine]
+workers = 8
+page_size = 5000
+write_batch_size = 10
+preserve_writetimes = false
+preserve_ttls = false
+# preserve_frozen_collections = false
+# preserve_collection_elements = false  # maps/sets per-element TTL/WRITETIME
+
+[engine.concurrency]
+initial = 64
+minimum = 16
+maximum = 256
+
+[engine.adaptive]
+enabled = true
+target_p99_ms = 15
+
+[checkpoint]
+path = "./.odyssey/migration.db"
+interval_secs = 5
+
+[validation]
+mode = "digest"
+sample_size = 1000
+compare_timestamps = false
+writetime_tolerance_us = 1000000
+ttl_tolerance_secs = 60
+
+[logging]
+verbosity = "info"
+format = "text"
+# file = "./.odyssey/ferry.log"
+
+[metrics]
+enabled = true
+listen_addr = "127.0.0.1:9100"
+
+# Migration dashboard (HTML + /api/status). Default avoids Spark Master :8080.
+# Or override at runtime: odyssey-migrator migrate -c ferry.toml --ui-addr 127.0.0.1:19080
+[ui]
+enabled = true
+listen_addr = "127.0.0.1:9080"
+
+[live]
+enabled = false
+window_secs = 60
+safety_secs = 30
+sleep_secs = 10
+overlap_secs = 60
+target_lag_ms = 500
+
+# App dual-write during cutover (Cassandra→Scylla or extra safety net)
+[dual_write]
+enabled = false
+listen_addr = "127.0.0.1:8091"
+# auth_token = "shared-secret"
+require_both = true
+
+[integrity]
+guarantee = "at_least_once"
+fail_unit_on_write_error = true
+require_checkpoint_before_complete = true
+checkpoint_on_cancel = true

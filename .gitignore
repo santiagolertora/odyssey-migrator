@@ -1,0 +1,12 @@
+/target
+**/*.rs.bk
+.odyssey/
+.ferry/
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+.DS_Store
+.idea/
+.vscode/
+*.swp

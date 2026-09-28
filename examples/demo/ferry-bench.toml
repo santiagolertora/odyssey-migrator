@@ -1,0 +1,69 @@
+# Same as ferry.toml but no UI hold — for wall-clock benchmarks.
+# Checkpoint path is separate so demo UI jobs stay intact.
+
+[migration]
+name = "odyssey-bench-cass-to-scylla"
+
+[source]
+kind = "cql"
+contact_points = ["127.0.0.1:9042"]
+datacenter = "datacenter1"
+consistency = "one"
+contact_points_only = true
+
+[target]
+contact_points = ["127.0.0.1:9043"]
+datacenter = "datacenter1"
+consistency = "one"
+contact_points_only = true
+create_schema = true
+create_schema_rf = 1
+
+[[tables]]
+source = "ferry_demo.events"
+target = "ferry_demo.events"
+
+[engine]
+workers = 8
+page_size = 5000
+write_batch_size = 10
+preserve_writetimes = true
+preserve_ttls = true
+
+[engine.concurrency]
+initial = 64
+minimum = 16
+maximum = 256
+
+[engine.adaptive]
+enabled = true
+target_p99_ms = 25
+
+[checkpoint]
+path = "./.odyssey/bench-migration.db"
+interval_secs = 2
+
+[validation]
+mode = "digest"
+sample_size = 500
+compare_timestamps = false
+
+[logging]
+verbosity = "warn"
+format = "text"
+
+[metrics]
+enabled = false
+
+[ui]
+enabled = false
+hold_secs = 0
+
+[live]
+enabled = false
+
+[integrity]
+guarantee = "at_least_once"
+fail_unit_on_write_error = true
+require_checkpoint_before_complete = true
+checkpoint_on_cancel = true

@@ -1,0 +1,63 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/odyssey-types",
+    "crates/odyssey-core",
+    "crates/odyssey-cql",
+    "crates/odyssey-planner",
+    "crates/odyssey-checkpoint",
+    "crates/odyssey-engine",
+    "crates/odyssey-metrics",
+    "crates/odyssey-validation",
+    "crates/odyssey-cdc",
+    "crates/odyssey-cli",
+    "crates/odyssey-dualwrite",
+    "crates/odyssey-integration",
+]
+default-members = ["crates/odyssey-cli"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "UNLICENSED"
+authors = ["Santiago Lertora"]
+repository = "https://github.com/santiagolertora/odyssey-migrator"
+rust-version = "1.88"
+
+[workspace.dependencies]
+odyssey-types = { path = "crates/odyssey-types" }
+odyssey-core = { path = "crates/odyssey-core" }
+odyssey-cql = { path = "crates/odyssey-cql" }
+odyssey-planner = { path = "crates/odyssey-planner" }
+odyssey-checkpoint = { path = "crates/odyssey-checkpoint" }
+odyssey-engine = { path = "crates/odyssey-engine" }
+odyssey-metrics = { path = "crates/odyssey-metrics" }
+odyssey-validation = { path = "crates/odyssey-validation" }
+odyssey-cdc = { path = "crates/odyssey-cdc" }
+odyssey-dualwrite = { path = "crates/odyssey-dualwrite" }
+
+scylla = "1.8"
+scylla-cdc = "0.7"
+tokio = { version = "1.53", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "signal"] }
+clap = { version = "4.5", features = ["derive", "cargo"] }
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+thiserror = "2.0"
+anyhow = "1.0"
+uuid = { version = "1.11", features = ["v4", "serde"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-appender = "0.2"
+futures = "0.3"
+rusqlite = { version = "0.32", features = ["bundled"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+blake3 = "1.5"
+prometheus-client = "0.23"
+serde_json = "1.0"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

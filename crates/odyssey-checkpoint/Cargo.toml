@@ -1,0 +1,21 @@
+[package]
+name = "odyssey-checkpoint"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Durable SQLite checkpoints for Odyssey Migrator migrations"
+publish = false
+
+[dependencies]
+odyssey-types = { workspace = true }
+odyssey-core = { workspace = true }
+rusqlite = { workspace = true }
+thiserror = { workspace = true }
+uuid = { workspace = true }
+serde = { workspace = true }
+tracing = { workspace = true }
+chrono = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3.14"

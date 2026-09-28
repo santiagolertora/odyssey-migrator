@@ -1,0 +1,14 @@
+[package]
+name = "odyssey-planner"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Token-range planning for Odyssey Migrator migrations"
+publish = false
+
+[dependencies]
+odyssey-types = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]

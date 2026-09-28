@@ -1,0 +1,21 @@
+[package]
+name = "odyssey-dualwrite"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "HTTP dual-write gateway for Odyssey Migrator cutover"
+publish = false
+
+[dependencies]
+odyssey-core = { workspace = true }
+odyssey-cql = { workspace = true }
+scylla = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
+
+[dev-dependencies]

@@ -1,0 +1,37 @@
+# Odyssey demo — official images, 1+1 (light).
+# For RF=3 later: scale only when Docker Desktop has ≥8–10 GB RAM.
+#
+#   ./examples/demo/seed.sh
+#   cargo run -p odyssey-cli -- migrate --config examples/demo/ferry.toml
+#
+# Ports: Cassandra 9042 · Scylla 9043
+
+name: ferry-demo
+
+networks:
+  ferry:
+
+services:
+  cassandra:
+    image: cassandra:4.1
+    networks: [ferry]
+    ports: ["9042:9042"]
+    environment:
+      CASSANDRA_CLUSTER_NAME: ferry-source
+      CASSANDRA_DC: datacenter1
+      CASSANDRA_RACK: rack1
+      MAX_HEAP_SIZE: 512M
+      HEAP_NEWSIZE: 128M
+    # No depends_on health chains — seed.sh waits with cqlsh.
+
+  scylla:
+    image: scylladb/scylla:5.4
+    networks: [ferry]
+    ports: ["9043:9042"]
+    command:
+      [
+        "--smp", "1",
+        "--memory", "750M",
+        "--overprovisioned", "1",
+        "--developer-mode", "1",
+      ]

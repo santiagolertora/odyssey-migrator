@@ -1,0 +1,22 @@
+[package]
+name = "odyssey-validation"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Canonical row hashing and post-migration validation for Odyssey Migrator"
+publish = false
+
+[dependencies]
+odyssey-types = { workspace = true }
+odyssey-core = { workspace = true }
+odyssey-cql = { workspace = true }
+odyssey-engine = { workspace = true }
+scylla = { workspace = true }
+blake3 = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+futures = { workspace = true }
+
+[dev-dependencies]
