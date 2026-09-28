@@ -10,3 +10,8 @@
 .idea/
 .vscode/
 *.swp
+
+# Local / internal notes — not part of the public tree
+/chat.md
+/prd.md
+/rust-backup-access-guide.md

@@ -1,6 +1,6 @@
 # Live migration with Odyssey (CDC catch-up)
 
-> Part of the docs hub: [README](README.md) · [Commands](commands.md) · [Configuration](configuration.md)
+> Docs index: [README](README.md) · [Commands](commands.md) · [Configuration](configuration.md)
 
 Bulk copy alone is a snapshot race: any UPDATE or DELETE that lands while ranges
 are still being read can leave the target wrong. Odyssey's live path uses **Scylla

@@ -15,7 +15,7 @@ row that was already read from the source.
 | [Commands](commands.md) | Every CLI command and flag |
 | [Configuration](configuration.md) | TOML reference (`ferry.toml`) |
 | [Live migration](live-migration.md) | CDC catch-up, cutover, dual-write |
-| [Known gaps](known-gaps.md) | Honest limits / what is done vs open |
+| [Limitations](known-gaps.md) | What is still partial or out of scope |
 | [Benchmark](benchmark.md) | Local throughput notes vs Spark |
 
 ## Typical workflows

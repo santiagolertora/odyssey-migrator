@@ -1,9 +1,7 @@
-# Known gaps / technical debt
+# Current limitations
 
-> Part of the docs hub: [README](README.md)
-
-Honest limits of the current Odyssey Migrator V0.x. Prefer fail-closed over
-pretending these are done.
+Limits of Odyssey Migrator V0.x. Prefer fail-closed behaviour over pretending
+these are finished.
 
 ## Data model
 

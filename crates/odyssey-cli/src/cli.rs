@@ -19,17 +19,19 @@ Live (Scylla CDC) / cutover:
   odyssey-migrator dual-write -c ferry.toml   # Cassandra→Scylla writers
 
 Docs: docs/README.md  ·  Config: examples/ferry.toml
-Copyright (c) 2026 Santiago Lertora. All rights reserved.
+Author: Santiago Lertora <santiagolertora@gmail.com>
+License: Business Source License 1.1 — see LICENSE
 ";
 
 #[derive(Debug, Parser)]
 #[command(
     name = "odyssey-migrator",
     version,
-    author = "Santiago Lertora",
-    about = "Resumable CQL → ScyllaDB migrator (no Spark) — by Santiago Lertora",
-    long_about = "Odyssey Migrator — by Santiago Lertora\n\
-Copies Cassandra/Scylla tables into ScyllaDB without Spark.\n\n\
+    author = "Santiago Lertora <santiagolertora@gmail.com>",
+    about = "Resumable CQL → ScyllaDB migrator (no Spark)",
+    long_about = "Odyssey Migrator copies Cassandra/Scylla tables into ScyllaDB without Spark.\n\n\
+Author: Santiago Lertora <santiagolertora@gmail.com>\n\
+License: Business Source License 1.1 (see LICENSE)\n\n\
 Durability: at-least-once. A primary key may be rewritten; a successfully read row is never skipped.\n\
 Bulk path: token-range SELECT → prepared INSERT → SQLite checkpoint.\n\
 Live path: Scylla CDC catch-up (UPDATE/DELETE). Cassandra sources use dual-write during cutover.\n\n\

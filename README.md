@@ -1,78 +1,72 @@
 # Odyssey Migrator
 
-Lightweight, resumable CQL → ScyllaDB migration — **no Spark**, no JVM, no assembly JAR.
+CQL table migration into ScyllaDB without Spark.
 
-**Hard rule:** never lose a row that was successfully read from the source. Delivery is
-at-least-once (rewriting a PK is fine; skipping a failed write is not).
+Odyssey copies Cassandra or Scylla tables over the native CQL protocol: token-range
+reads, prepared writes, SQLite checkpoints, and an optional live path for catching up
+mutations after the bulk copy. Delivery is at-least-once — Odyssey may rewrite a
+primary key, but it will not skip a row that was already read from the source.
 
-## Documentation
+## Why it exists
 
-| Doc | |
-|-----|--|
-| **[docs/README.md](docs/README.md)** | Documentation hub |
-| [Install](docs/install.md) | Build binary + Docker demo |
-| [Quickstart](docs/quickstart.md) | First migrate → validate |
-| [Commands](docs/commands.md) | Full CLI reference |
-| [Configuration](docs/configuration.md) | TOML (`ferry.toml`) |
-| [Live migration](docs/live-migration.md) | CDC, cutover, dual-write |
-| [Known gaps](docs/known-gaps.md) | Honest limits |
+Tools built around Spark add a heavy runtime for a job that is ultimately
+“read ranges, write ranges, resume if interrupted.” Odyssey keeps that path in a
+single Rust binary: plan → copy → checkpoint → validate → (optional) CDC / dual-write.
 
-```bash
-odyssey-migrator --help
-```
+## Features
 
-## Install (short)
+- Parallel token-range copy with adaptive concurrency and retries
+- Resumable SQLite checkpoints (multi-process mesh optional)
+- Digest / sample / full validation
+- Scylla CDC live catch-up and an ops cutover checklist
+- HTTP dual-write gateway for Cassandra→Scylla cutover windows
+- Optional TTL / WRITETIME preserve (scalars, frozen collections, map/set elements)
+- Prometheus metrics and a small HTML progress dashboard
+
+## Quick start
 
 ```bash
 cargo build --release -p odyssey-cli
-./target/release/odyssey-migrator --help
-cp examples/ferry.toml ./ferry.toml
+cp examples/ferry.toml ./ferry.toml   # edit contact points and [[tables]]
+
+./target/release/odyssey-migrator migrate -c ferry.toml --plan-only
+./target/release/odyssey-migrator migrate -c ferry.toml
+./target/release/odyssey-migrator validate <migration-id> -c ferry.toml
 ```
 
-Details: [docs/install.md](docs/install.md).
-
-## Quick commands
+Install the binary on your `PATH`:
 
 ```bash
-# Local demo clusters
-docker compose -f examples/demo/docker-compose.yml up -d
-
-odyssey-migrator migrate -c ferry.toml --plan-only
-odyssey-migrator migrate -c ferry.toml
-odyssey-migrator status <migration-id> -c ferry.toml
-odyssey-migrator validate <migration-id> -c ferry.toml
-odyssey-migrator resume <migration-id> -c ferry.toml
-
-# Live / cutover (Scylla CDC) or dual-write (Cassandra source)
-odyssey-migrator migrate -c ferry.toml --with-live
-odyssey-migrator cutover -c ferry.toml
-odyssey-migrator dual-write -c ferry.toml
+cargo install --path crates/odyssey-cli
+odyssey-migrator --help
 ```
 
-## What it does
+Local demo clusters: `docker compose -f examples/demo/docker-compose.yml up -d`
+(see [docs/install.md](docs/install.md)).
 
-- TOML config · schema discovery · Murmur3 / vnode planning
-- Parallel page copy · AIMD concurrency · SQLite resume
-- Digest / sample / full validation · Prometheus `/metrics` · HTML dashboard
-- Scylla CDC live catch-up · cutover checklist · HTTP dual-write gateway
-- Optional TTL/WRITETIME preserve (scalars, frozen collections, map/set elements)
+## Documentation
+
+| | |
+|--|--|
+| [docs/README.md](docs/README.md) | Documentation index |
+| [Install](docs/install.md) | Build and Docker demo |
+| [Quickstart](docs/quickstart.md) | First migration end-to-end |
+| [Commands](docs/commands.md) | CLI reference |
+| [Configuration](docs/configuration.md) | TOML settings |
+| [Live migration](docs/live-migration.md) | CDC, cutover, dual-write |
+| [Limitations](docs/known-gaps.md) | Current limits |
 
 ## Integrity model
 
 ```text
-read page → write rows → checkpoint progress → only then may the unit become completed
+read page → write rows → checkpoint progress → only then may a unit complete
 ```
 
-## Workspace
-
-```text
-crates/
-  odyssey-types / odyssey-core / odyssey-cql / odyssey-planner
-  odyssey-checkpoint / odyssey-engine / odyssey-validation / odyssey-metrics
-  odyssey-cdc / odyssey-dualwrite / odyssey-cli / odyssey-integration
-```
+Failed writes fail the unit after retries. Interrupted runs resume from the last
+durable checkpoint.
 
 ## License
 
-Copyright (c) 2026 Santiago Lertora. All rights reserved.
-See [`LICENSE`](LICENSE).
+Business Source License 1.1 (BSL). See [`LICENSE`](LICENSE).
+
+Copyright (c) 2026 Santiago Lertora \<santiagolertora@gmail.com\>.
