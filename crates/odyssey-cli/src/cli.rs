@@ -20,7 +20,8 @@ Live (Scylla CDC) / cutover:
 
 Docs: docs/README.md  ·  Config: examples/ferry.toml
 Author: Santiago Lertora <santiagolertora@gmail.com>
-License: Business Source License 1.1 — see LICENSE
+License: BUSL-1.1 — free for internal use; commercial license for paid
+         migration/consulting work. Free use includes no support. See LICENSE.
 ";
 
 #[derive(Debug, Parser)]
@@ -31,7 +32,8 @@ License: Business Source License 1.1 — see LICENSE
     about = "Resumable CQL → ScyllaDB migrator (no Spark)",
     long_about = "Odyssey Migrator copies Cassandra/Scylla tables into ScyllaDB without Spark.\n\n\
 Author: Santiago Lertora <santiagolertora@gmail.com>\n\
-License: Business Source License 1.1 (see LICENSE)\n\n\
+License: BUSL-1.1 (see LICENSE). Free for internal use; commercial license\n\
+required for paid migration or consulting work. Free use includes no support.\n\n\
 Durability: at-least-once. A primary key may be rewritten; a successfully read row is never skipped.\n\
 Bulk path: token-range SELECT → prepared INSERT → SQLite checkpoint.\n\
 Live path: Scylla CDC catch-up (UPDATE/DELETE). Cassandra sources use dual-write during cutover.\n\n\

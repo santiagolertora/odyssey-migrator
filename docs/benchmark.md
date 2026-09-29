@@ -23,7 +23,7 @@ Scylla Migrator needs:
 4. Similar consistency / batching knobs
 
 On a laptop `local[*]` Spark run is usually **JVM + driver overhead dominated**
-and understates Spark at cluster scale. For interview-grade numbers, run both
+and understates Spark at cluster scale. For comparable numbers, run both
 tools against the **same 3-node Cassandra → 3-node Scylla** lab and record:
 
 | Tool | Rows | Wall s | rows/s | Notes |

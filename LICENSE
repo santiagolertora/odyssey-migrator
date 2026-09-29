@@ -5,9 +5,15 @@ Parameters
 Licensor:             Santiago Lertora <santiagolertora@gmail.com>
 Licensed Work:        Odyssey Migrator
                       The Licensed Work is (c) 2026 Santiago Lertora
-Additional Use Grant: You may make production use of the Licensed Work,
-                      provided You do not use it to offer a competing hosted
-                      or managed data-migration service to third parties.
+Additional Use Grant: You may make production use of the Licensed Work solely
+                      for Your own internal business purposes (for example,
+                      migrating databases that You operate for Yourself).
+                      You may not use the Licensed Work to provide migration,
+                      consulting, professional services, hosting, managed
+                      services, or any other commercial offering to third
+                      parties, whether invoiced as a project, retainer, SaaS,
+                      or otherwise. Such use requires a separate commercial
+                      license from the Licensor.
 Change Date:          2030-09-28
 Change License:       Apache License, Version 2.0
 

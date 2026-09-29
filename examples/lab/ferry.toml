@@ -1,4 +1,4 @@
-# Lab smoke: interview SRC (read-only) → OUR scylladb1 cluster (writes only here).
+# Lab smoke: remote SRC (read-only) → local scylladb1 cluster (writes only here).
 #
 # SAFETY
 # - Source: SELECT only (Odyssey never INSERT/UPDATE/DELETE/TRUNCATE on SRC)

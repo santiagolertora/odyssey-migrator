@@ -69,4 +69,12 @@ durable checkpoint.
 
 Business Source License 1.1 (BSL). See [`LICENSE`](LICENSE).
 
-Copyright (c) 2026 Santiago Lertora \<santiagolertora@gmail.com\>.
+**Free under BSL:** non-production use, and production use for your own internal
+workloads only. Free use includes **no support**.
+
+**Commercial license required** if you use Odyssey to make money migrating data
+or advising others — including consultancies, system integrators, managed
+migration offerings, and any billed professional services built around the tool.
+Contact Santiago Lertora \<santiagolertora@gmail.com\>.
+
+Copyright (c) 2026 Santiago Lertora.
